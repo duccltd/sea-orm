@@ -1,3 +1,4 @@
+use entity::sea_orm::migration::*;
 use sea_schema::migration::prelude::*;
 
 pub struct Migration;
@@ -9,12 +10,12 @@ impl MigrationName for Migration {
 }
 
 #[async_trait::async_trait]
-impl MigrationTrait for Migration {
-    async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+impl MigrationTrait<DbConn> for Migration {
+    async fn up(&self, manager: &SchemaManager<DbConn>) -> Result<(), DbErr> {
         todo!()
     }
 
-    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+    async fn down(&self, manager: &SchemaManager<DbConn>) -> Result<(), DbErr> {
         todo!()
     }
 }
