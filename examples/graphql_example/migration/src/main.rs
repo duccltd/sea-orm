@@ -1,3 +1,4 @@
+use entity::sea_orm::migration::*;
 use migration::Migrator;
 use sea_schema::migration::*;
 use std::path::PathBuf;

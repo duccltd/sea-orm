@@ -1,3 +1,4 @@
+use entity::sea_orm::migration::*;
 pub use sea_schema::migration::*;
 
 mod m20220101_000001_create_table;
