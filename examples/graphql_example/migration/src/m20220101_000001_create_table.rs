@@ -29,8 +29,8 @@ impl MigrationName for Migration {
 }
 
 #[async_trait::async_trait]
-impl MigrationTrait for Migration {
-    async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+impl MigrationTrait<DbConn> for Migration {
+    async fn up(&self, manager: &SchemaManager<DbConn>) -> Result<(), DbErr> {
         let stmts = vec![get_seaorm_create_stmt(note::Entity)];
 
         for stmt in stmts {
@@ -40,7 +40,7 @@ impl MigrationTrait for Migration {
         Ok(())
     }
 
-    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+    async fn down(&self, manager: &SchemaManager<DbConn>) -> Result<(), DbErr> {
         let stmts = vec![get_seaorm_drop_stmt(note::Entity)];
 
         for stmt in stmts {

@@ -1,4 +1,6 @@
 use entity::post::*;
+use entity::sea_orm::migration::*;
+
 use sea_schema::migration::prelude::*;
 
 pub struct Migration;
@@ -10,8 +12,8 @@ impl MigrationName for Migration {
 }
 
 #[async_trait::async_trait]
-impl MigrationTrait for Migration {
-    async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+impl MigrationTrait<DbConn> for Migration {
+    async fn up(&self, manager: &SchemaManager<DbConn>) -> Result<(), DbErr> {
         manager
             .create_table(
                 Table::create()
@@ -31,7 +33,7 @@ impl MigrationTrait for Migration {
             .await
     }
 
-    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+    async fn down(&self, manager: &SchemaManager<DbConn>) -> Result<(), DbErr> {
         manager
             .drop_table(Table::drop().table(Entity).to_owned())
             .await
