@@ -295,6 +295,9 @@ pub mod error;
 mod executor;
 /// Holds types and methods to perform metric collection
 pub mod metric;
+/// Migration supports
+#[cfg(feature = "migration")]
+pub mod migration;
 /// Holds types and methods to perform queries
 pub mod query;
 /// Holds types that defines the schemas of an Entity
