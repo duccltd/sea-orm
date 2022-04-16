@@ -437,7 +437,11 @@ where
         C: ConnectionTrait,
     {
         self.query.limit(1);
-        self.into_selector_raw(db).one(db).await
+        let mut rows = self.into_selector_raw(db).all(db).await?;
+        if rows.len() > 1 {
+            panic!("too many rows returned!");
+        }
+        Ok(rows.pop())
     }
 
     /// Get all items from the Select query
