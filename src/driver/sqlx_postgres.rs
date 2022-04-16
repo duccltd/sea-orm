@@ -96,24 +96,31 @@ impl SqlxPostgresPoolConnection {
     /// Get one result from a SQL query. Returns [Option::None] if no match was found
     #[instrument(level = "trace")]
     pub async fn query_one(&self, stmt: Statement) -> Result<Option<QueryResult>, DbErr> {
-        debug_print!("{}", stmt);
+        // debug_print!("{}", stmt);
 
-        let query = sqlx_query(&stmt);
-        if let Ok(conn) = &mut self.pool.acquire().await {
-            crate::metric::metric!(self.metric_callback, &stmt, {
-                match query.fetch_one(conn).await {
-                    Ok(row) => Ok(Some(row.into())),
-                    Err(err) => match err {
-                        sqlx::Error::RowNotFound => Ok(None),
-                        _ => Err(DbErr::Query(err.to_string())),
-                    },
-                }
-            })
-        } else {
-            Err(DbErr::Query(
-                "Failed to acquire connection from pool.".to_owned(),
-            ))
+        // let query = sqlx_query(&stmt);
+        // if let Ok(conn) = &mut self.pool.acquire().await {
+        //     crate::metric::metric!(self.metric_callback, &stmt, {
+        //         match query.fetch_one(conn).await {
+        //             Ok(row) => Ok(Some(row.into())),
+        //             Err(err) => match err {
+        //                 sqlx::Error::RowNotFound => Ok(None),
+        //                 _ => Err(DbErr::Query(err.to_string())),
+        //             },
+        //         }
+        //     })
+        // } else {
+        //     Err(DbErr::Query(
+        //         "Failed to acquire connection from pool.".to_owned(),
+        //     ))
+        // }
+
+        let mut rows = self.query_all(stmt).await?;
+        if rows.len() > 1 {
+            panic!("too many rows returned!");
         }
+
+        Ok(rows.pop())
     }
 
     /// Get the results of a query returning them as a Vec<[QueryResult]>
