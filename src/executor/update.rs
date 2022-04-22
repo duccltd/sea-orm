@@ -107,8 +107,10 @@ where
                 SelectorRaw::<SelectModel<<A::Entity as EntityTrait>::Model>>::from_statement(
                     db_backend.build(&query),
                 )
-                .one(db)
-                .await?;
+                .all(db)
+                .await?
+                .first()
+                .cloned();
             // If we got `None` then we are updating a row that does not exist.
             match found {
                 Some(model) => Ok(model),
@@ -125,8 +127,10 @@ where
                 None => return Err(DbErr::Exec("Fail to get primary key from model".to_owned())),
             };
             let found = <A::Entity as EntityTrait>::find_by_id(primary_key_value)
-                .one(db)
-                .await?;
+                .all(db)
+                .await?
+                .first()
+                .cloned();
             // If we cannot select the updated row from db by the cached primary key
             match found {
                 Some(model) => Ok(model),

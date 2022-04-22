@@ -118,11 +118,11 @@ where
             let cols = PrimaryKey::<A>::iter()
                 .map(|col| col.to_string())
                 .collect::<Vec<_>>();
-            
+
             // https://github.com/SeaQL/sea-orm/pull/531/files#diff-f72f2956c0efb280b2360edac5cd5ef1cfe72dc03cb9f45a1770d96909e81218R126-R128
             let vec = db.query_all(statement).await?;
             let res = vec.get(0).unwrap();
-            
+
             res.try_get_many("", cols.as_ref()).ok()
         }
         false => {
@@ -174,7 +174,7 @@ where
         false => {
             // https://github.com/SeaQL/sea-orm/pull/531/files#diff-f72f2956c0efb280b2360edac5cd5ef1cfe72dc03cb9f45a1770d96909e81218R189
             use crate::QuerySelect;
-            
+
             let insert_res =
                 exec_insert::<A, _>(primary_key, db_backend.build(&insert_statement), db).await?;
             <A::Entity as EntityTrait>::find_by_id(insert_res.last_insert_id)
